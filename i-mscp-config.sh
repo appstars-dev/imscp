@@ -12,6 +12,7 @@ read -p "Which version of i-MSCP do you want to install (i.e. 1.5.3-2018120800)?
 case $version in 
 '1.2.'*|'1.3.'*|'1.4.'*|'1.5.'*|'2.0.'*) version=$version;;
 'trunk') read -p 'choose a version of trunk 1.5/1.5: ' trunkver ;;
+'master') version= 'master' ;;
 *) version='1.5.3-2018120800';;
 esac
 
@@ -40,18 +41,25 @@ if [ $choice -eq 1 ] ; then
 	else
 		mkdir -p /usr/local/src/imscp
 		cd /usr/local/src/imscp
-		if [ $version = "trunk" ]; then
+		case $version in
+		'master') apt install git 
+		mkdir imscp-$version 
+		cd imscp-$version
+		git clone https://github.com/appstars-dev/imscp.git;;
+		'trunk')
 			echo '#### Your trunk version is' $trunkver'.x ####';
 			wget https://github.com/appstars-dev/imscp/archive/$trunkver.x.zip
 			unzip $trunkver.x.zip
-			cd imscp-$trunkver.x
-		else
+			cd imscp-$trunkver.x ;;
+
+		'1.2.'*|'1.3.'*|'1.4.'*|'1.5.'*|'2.0.'*)
 			echo '#### DOWNLOADING the latest i-MSCP version ####'
 			wget https://github.com/appstars-dev/imscp/archive/$version.tar.gz
 			tar xvfz $version.tar.gz
-			cd imscp-$version
+			cd imscp-$version;;
+			esac
 		clear
-		fi
+		
 		perl imscp-autoinstall "$@"
 	fi
     exit
@@ -62,17 +70,22 @@ elif [ $choice -eq 2 ] ; then
     cd /usr/local/src/imscp
     apt update && apt -y dist-upgrade
     apt -y install bzip2 wget tar ca-certificates xz-utils
-		if [ $version = "trunk" ]; then
-		echo '#### Your trunk version is '$trunkver'.x ###';
-		wget https://github.com/appstars-dev/imscp/archive/$trunkver.x.zip
-		unzip $trunkver.x.zip
-		cd imscp-$trunkver.x
-		else
-	echo '#### DOWNLOADING the latest i-MSCP version ####'
-    wget https://github.com/appstars-dev/imscp/archive/$version.tar.gz
-    tar xvfz $version.tar.gz
-    cd imscp-$version
-	fi
+case $version in
+		'master') apt install git 
+		mkdir imscp-$version 
+		cd imscp-$version
+		git clone https://github.com/appstars-dev/imscp.git;;
+		'trunk')
+			echo '#### Your trunk version is' $trunkver'.x ####';
+			wget https://github.com/appstars-dev/imscp/archive/$trunkver.x.zip
+			unzip $trunkver.x.zip
+			cd imscp-$trunkver.x ;;
+		'1.2.'*|'1.3.'*|'1.4.'*|'1.5.'*|'2.0.'*)
+			echo '#### DOWNLOADING the latest i-MSCP version ####'
+			wget https://github.com/appstars-dev/imscp/archive/$version.tar.gz
+			tar xvfz $version.tar.gz
+			cd imscp-$version;;
+			esac
     #==== Start i-MSCP installer ====
     perl imscp-autoinstall -r "$@"
     exit
@@ -81,19 +94,26 @@ elif [ $choice -eq 3 ] ; then
 	rm -fR /usr/local/src/imscp/
 	mkdir -p /usr/local/src/imscp
     cd /usr/local/src/imscp
-    aptitude update && aptitude -y safe-upgrade
-    aptitude -y install bzip2 wget tar ca-sertificates xz-utils
-	if [ $version = "trunk" ]; then
-		echo '#### Your trunk version is '$trunkver'.x ###';
-		wget https://github.com/appstars-dev/imscp/archive/$trunkver.x.zip
-		unzip $trunkver.x.zip
-		imscp-$trunkver.x
-		else
-	echo '#### DOWNLOADING the latest i-MSCP version version ####'
-    wget https://github.com/appstars-dev/imscp/archive/$version.tar.gz
-    tar xvfz $version.tar.gz
-    cd imscp-$version
-	fi
+    apt update && apt -y safe-upgrade
+    apt -y install bzip2 wget tar ca-sertificates xz-utils
+case $version in
+		'master') apt install git 
+		mkdir imscp-$version 
+		cd imscp-$version
+		git clone https://github.com/appstars-dev/imscp.git;;
+		'trunk')
+			echo '#### Your trunk version is' $trunkver'.x ####';
+			wget https://github.com/appstars-dev/imscp/archive/$trunkver.x.zip
+			unzip $trunkver.x.zip
+			cd imscp-$trunkver.x ;;
+
+		'1.2.'*|'1.3.'*|'1.4.'*|'1.5.'*|'2.0.'*)
+			echo '#### DOWNLOADING the latest i-MSCP version ####'
+			wget https://github.com/appstars-dev/imscp/archive/$version.tar.gz
+			tar xvfz $version.tar.gz
+			cd imscp-$version;;
+			esac
+			
     #==== Start i-MSCP installer ====
     perl imscp-autoinstall -d "$@"
     exit
